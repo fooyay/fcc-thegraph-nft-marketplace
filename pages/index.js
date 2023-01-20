@@ -1,27 +1,51 @@
 import Image from "next/image"
 import { Inter } from "@next/font/google"
 import styles from "../styles/Home.module.css"
+import { useMoralisQuery, useMoralis } from "react-moralis"
+import NFTBox from "../components/NFTBox"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export default function Home() {
-    // How do we show recently listed NFTs?
+    const { isWeb3Enabled } = useMoralis()
+    const { data: listedNfts, isFetching: fetchingListedNfts } = useMoralisQuery(
+        // table name
+        // function for the query
+        "ActiveItem",
+        (query) => query.limit(10).descending("tokenId")
+    )
+    console.log(listedNfts)
 
-    // We will index the events off-chain and then read from our database.
-    // Setup a server to listen for those events to be fired, and we will add them to a database to query.
-
-    // Woah, isn't that centralized?
-    // TheGraph does this in a decentralized way
-    // Moralis does it in a centralized way and comes with a ton of other features.
-
-    // All our logic is still 100% on chain.
-    // Speed & Development time.
-    // It's really hard to start a prod blockchain project 100% decentralized.
-    // They are working on open sourcing their code.
-    // Feature richness.
-    // We can create more features with a centralized back end to start
-    // as more decentralized tools are being created.
-    // Local development
-
-    return <div className={styles.container}>Hi</div>
+    return (
+        <div className="container mx-auto">
+            <h1 className="py-4 px-4 font-bold text-2xl">Recently Listed</h1>
+            <div className="flex flex-wrap">
+                {isWeb3Enabled ? (
+                    fetchingListedNfts ? (
+                        <div>Loading...</div>
+                    ) : (
+                        listedNfts.map((nft) => {
+                            console.log(nft.attributes)
+                            const { price, nftAddress, tokenId, marketplaceAddress, seller } =
+                                nft.attributes
+                            return (
+                                <div>
+                                    <NFTBox
+                                        price={price}
+                                        nftAdress={nftAddress}
+                                        tokenId={tokenId}
+                                        marketplaceAddress={marketplaceAddress}
+                                        seller={seller}
+                                        key={`${nftAddress}${tokenId}`}
+                                    />
+                                </div>
+                            )
+                        })
+                    )
+                ) : (
+                    <div>Web3 currently not enabled.</div>
+                )}
+            </div>
+        </div>
+    )
 }
