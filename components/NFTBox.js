@@ -22,7 +22,7 @@ const truncateStr = (fullStr, strLen) => {
     )
 }
 
-export default function NFTBox({ price, nftAdress, tokenId, marketplaceAddress, seller }) {
+export default function NFTBox({ price, nftAddress, tokenId, marketplaceAddress, seller }) {
     const { isWeb3Enabled, account } = useMoralis()
     const [imageURI, setImageURI] = useState("")
     const [tokenName, setTokenName] = useState("")
@@ -30,6 +30,9 @@ export default function NFTBox({ price, nftAdress, tokenId, marketplaceAddress, 
     const [showModal, setShowModal] = useState(false)
     const hideModal = () => setShowModal(false)
     const dispatch = useNotification()
+    // console.log(`abi: ${nftAbi}`)
+    // console.log(`contract address: ${nftAddress}`)
+    // console.log(`token id: ${tokenId}`)
 
     const { runContractFunction: getTokenURI } = useWeb3Contract({
         abi: nftAbi,
@@ -46,7 +49,7 @@ export default function NFTBox({ price, nftAdress, tokenId, marketplaceAddress, 
         functionName: "buyItem",
         msgValue: price,
         params: {
-            nftAdress: nftAddress,
+            nftAddress: nftAddress,
             tokenId: tokenId,
         },
     })
@@ -102,14 +105,13 @@ export default function NFTBox({ price, nftAdress, tokenId, marketplaceAddress, 
     return (
         <div>
             <div>
-                k
                 {imageURI ? (
                     <div>
                         <UpdateListingModal
                             isVisible={showModal}
                             tokenId={tokenId}
                             marketplaceAddress={marketplaceAddress}
-                            nftAddress={nftAdress}
+                            nftAddress={nftAddress}
                             onClose={hideModal}
                         />
                         <Card
@@ -137,7 +139,7 @@ export default function NFTBox({ price, nftAdress, tokenId, marketplaceAddress, 
                         </Card>
                     </div>
                 ) : (
-                    <div>Loading...</div>
+                    <div>Loading Image...</div>
                 )}
             </div>
         </div>

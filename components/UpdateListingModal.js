@@ -46,7 +46,7 @@ export default function UpdateListingModal({
             onOk={() => {
                 updateListing({
                     onError: (error) => console.log(error),
-                    onSuccess: () => handleUpdateListingSuccess(),
+                    onSuccess: handleUpdateListingSuccess,
                 })
             }}
         >
@@ -57,7 +57,6 @@ export default function UpdateListingModal({
                 onChange={(event) => {
                     setPriceToUpdateListingWith(event.target.value)
                 }}
-                onOk={() => {}}
             />
         </Modal>
     )
